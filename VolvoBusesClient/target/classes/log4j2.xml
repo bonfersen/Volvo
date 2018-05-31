@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="WARN">
+	<Properties>
+		<Property name="directory">C:/volvoBusesClient</Property>
+		<Property name="filename">volvoBusesClient</Property>
+	</Properties>
+
+	<appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+		</Console>
+
+		<RollingFile name="RollingFile"
+			fileName="${directory}/${filename}.log"
+			filePattern="${directory}/${filename}bk-%d{MM-dd-yyyy}-%i.log.zip">
+			<PatternLayout
+				pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="7 MB" />
+			</Policies>
+		</RollingFile>
+	</appenders>
+
+	<loggers>
+		<root level="INFO">
+			<appender-ref ref="Console" level="DEBUG" />
+			<appender-ref ref="RollingFile" level="INFO" />
+		</root>
+	</loggers>
+</configuration>

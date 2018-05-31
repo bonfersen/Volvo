@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sutran.client.dao.GenTbVehiculoMapper">
+  <resultMap id="BaseResultMap" type="com.sutran.client.bean.GenTbVehiculo">
+    <id column="idVehiculo" jdbcType="INTEGER" property="idVehiculo" />
+    <result column="placa" jdbcType="VARCHAR" property="placa" />
+    <result column="fechaRegistroApi" jdbcType="TIMESTAMP" property="fechaRegistroApi" />
+    <result column="idFlota" jdbcType="INTEGER" property="idFlota" />
+    <result column="idVehiculoApi" jdbcType="BIGINT" property="idVehiculoApi" />
+    <result column="vin" jdbcType="VARCHAR" property="vin" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    idVehiculo, placa, fechaRegistroApi, idFlota, idVehiculoApi, vin
+  </sql>
+  <select id="selectByExample" parameterType="com.sutran.client.util.CriteriaManager" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from Gen_tb_Vehiculo
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from Gen_tb_Vehiculo
+    where idVehiculo = #{idVehiculo,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from Gen_tb_Vehiculo
+    where idVehiculo = #{idVehiculo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.sutran.client.bean.GenTbVehiculo">
+    <selectKey keyProperty="idVehiculo" order="AFTER" resultType="java.lang.Integer">
+      SELECT @@IDENTITY
+    </selectKey>
+    insert into Gen_tb_Vehiculo (placa, fechaRegistroApi, idFlota, 
+      idVehiculoApi, vin)
+    values (#{placa,jdbcType=VARCHAR}, #{fechaRegistroApi,jdbcType=TIMESTAMP}, #{idFlota,jdbcType=INTEGER}, 
+      #{idVehiculoApi,jdbcType=BIGINT}, #{vin,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.sutran.client.bean.GenTbVehiculo">
+    <selectKey keyProperty="idVehiculo" order="AFTER" resultType="java.lang.Integer">
+      SELECT @@IDENTITY
+    </selectKey>
+    insert into Gen_tb_Vehiculo
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="placa != null">
+        placa,
+      </if>
+      <if test="fechaRegistroApi != null">
+        fechaRegistroApi,
+      </if>
+      <if test="idFlota != null">
+        idFlota,
+      </if>
+      <if test="idVehiculoApi != null">
+        idVehiculoApi,
+      </if>
+      <if test="vin != null">
+        vin,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="placa != null">
+        #{placa,jdbcType=VARCHAR},
+      </if>
+      <if test="fechaRegistroApi != null">
+        #{fechaRegistroApi,jdbcType=TIMESTAMP},
+      </if>
+      <if test="idFlota != null">
+        #{idFlota,jdbcType=INTEGER},
+      </if>
+      <if test="idVehiculoApi != null">
+        #{idVehiculoApi,jdbcType=BIGINT},
+      </if>
+      <if test="vin != null">
+        #{vin,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sutran.client.bean.GenTbVehiculo">
+    update Gen_tb_Vehiculo
+    <set>
+      <if test="placa != null">
+        placa = #{placa,jdbcType=VARCHAR},
+      </if>
+      <if test="fechaRegistroApi != null">
+        fechaRegistroApi = #{fechaRegistroApi,jdbcType=TIMESTAMP},
+      </if>
+      <if test="idFlota != null">
+        idFlota = #{idFlota,jdbcType=INTEGER},
+      </if>
+      <if test="idVehiculoApi != null">
+        idVehiculoApi = #{idVehiculoApi,jdbcType=BIGINT},
+      </if>
+      <if test="vin != null">
+        vin = #{vin,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where idVehiculo = #{idVehiculo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sutran.client.bean.GenTbVehiculo">
+    update Gen_tb_Vehiculo
+    set placa = #{placa,jdbcType=VARCHAR},
+      fechaRegistroApi = #{fechaRegistroApi,jdbcType=TIMESTAMP},
+      idFlota = #{idFlota,jdbcType=INTEGER},
+      idVehiculoApi = #{idVehiculoApi,jdbcType=BIGINT},
+      vin = #{vin,jdbcType=VARCHAR}
+    where idVehiculo = #{idVehiculo,jdbcType=INTEGER}
+  </update>
+</mapper>

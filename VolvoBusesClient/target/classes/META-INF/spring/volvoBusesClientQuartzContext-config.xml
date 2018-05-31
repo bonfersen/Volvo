@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <!-- For times when you need more complex processing, passing data to the scheduled job -->
+    <bean name="volvoBusesScheduledJob" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <property name="jobClass" value="com.volvobuses.client.main.VolvoBusesScheduledJob" />
+        <property name="jobDataMap">
+            <map>
+                <entry key="volvoBusesService" value-ref="volvoBusesService" />
+            </map>
+        </property>
+        <property name="durability" value="true" />
+    </bean>
+ 
+ 	<!-- Run the job every hour with initial delay of 1 second -->
+    <bean id="simpleTrigger"  class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+        <property name="jobDetail" ref="volvoBusesScheduledJob" />
+        <property name="startDelay" value="1000" />
+        <property name="repeatInterval" value="3600000" />
+    </bean> 
+ 
+    <!-- Scheduler factory bean to glue together jobDetails and triggers to Configure Quartz Scheduler -->
+    <bean  class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="jobDetails">
+            <list>
+                <ref bean="volvoBusesScheduledJob" />
+            </list>
+        </property>
+ 
+        <property name="triggers">
+            <list>
+                <ref bean="simpleTrigger" />
+            </list>
+        </property>
+    </bean>
+ 
+</beans>
