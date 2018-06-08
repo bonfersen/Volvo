@@ -8,8 +8,15 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.contract.ArrayOfTimedPositionType;
+import org.contract.ArrayOfDriverIntervalDataType;
+import org.contract.ArrayOfDriverType;
+import org.contract.ArrayOfEventDataType;
+import org.contract.ArrayOfEventTypeType;
 import org.contract.ArrayOfVehicleType;
+import org.contract.DriverIntervalDataType;
+import org.contract.DriverType;
+import org.contract.EventDataType;
+import org.contract.EventTypeType;
 import org.contract.TimedPositionType;
 import org.contract.VehicleType;
 import org.springframework.stereotype.Service;
@@ -70,36 +77,41 @@ public class VolvoBusesServiceImpl extends Thread implements VolvoBusesService {
 	}*/
 
 	public void startConectionDynafleeApi() throws Exception {
-		logger.info("Iniciando comunicacion con los servicios de FleetMgmt");
+		logger.info("-----------------------Iniciando comunicacion con los servicios de FleetMgmt");
 		IExternalFleetMgmtService port = getURLConnection().getBasicHttps();
 		String srtLogin = null;
-		String srtVin =  null;
 		
 		try {
+			/*
+			 * Rango de fechas de busqueda
+			 */
+			XMLGregorianCalendar from = javax.xml.datatype.DatatypeFactory.newInstance().newXMLGregorianCalendar("2018-05-19T22:48:28.258-05:00");
+    		XMLGregorianCalendar to = javax.xml.datatype.DatatypeFactory.newInstance().newXMLGregorianCalendar("2018-05-20T22:48:28.258-05:00");
+			
 			/*
 			 * Login
 			 */
 			srtLogin = port.login("PeruBusApi", "Jya540766hkK");
 			logger.info("login.result=" + srtLogin);
 			String loginSession = srtLogin;
+			
             /*
              * GetVehicles
              */
-			int indice = 0;
             ArrayOfVehicleType arrayOfVehicleType = port.getVehicles(loginSession);
-            //arrayOfVehicleType.getVehicle());
+
             for (VehicleType vehicleType : arrayOfVehicleType.getVehicle()) {
             	logger.info("Vehiculos ---------------------------");
-            	logger.info("vin.result=" + vehicleType.getVin().getValue());
-            	logger.info("company.result=" + vehicleType.getCompanyId().longValue());
-            	logger.info("id.result=" + vehicleType.getId());
+            	logger.info("vin=" + vehicleType.getChassiId().getValue()); // VIN
+            	logger.info("company=" + vehicleType.getCompanyId().longValue());
+            	logger.info("id=" + vehicleType.getId()); // Id unico por vehiculo
+            	
+            	// CompanyId : relaciona a empresa con sus vehículos y usuarios 
             	
             	ArrayOfint arrayOfint = new ArrayOfint();
-        		XMLGregorianCalendar from = javax.xml.datatype.DatatypeFactory.newInstance().newXMLGregorianCalendar("2018-05-19T22:48:28.258-05:00");
-        		XMLGregorianCalendar to = javax.xml.datatype.DatatypeFactory.newInstance().newXMLGregorianCalendar("2018-05-20T22:48:28.258-05:00");
-            	arrayOfint.getInt().add(vehicleType.getId());
+        		arrayOfint.getInt().add(vehicleType.getId());
             	
-            	 /*
+            	/*
             	 * GetVehiclePositions
             	 */
                 ArrayOfKeyValueOfintArrayOfTimedPositionfi2YCEuP array = port.getVehiclePositions(loginSession, arrayOfint, from, to);
@@ -107,11 +119,48 @@ public class VolvoBusesServiceImpl extends Thread implements VolvoBusesService {
                 for (ArrayOfKeyValueOfintArrayOfTimedPositionfi2YCEuP.KeyValueOfintArrayOfTimedPositionfi2YCEuP a: arrayB) {
                 	logger.info("-----------------------Posicionamiento del VehicleId.result = " + a.getKey());
                 	for (TimedPositionType apt : a.getValue().getTimedPosition()) {
-                		logger.info("altitude.result=" + apt.getAltitude().getValue());
-                		logger.info("altitude.result=" + apt.getTimestamp().getValue());
+                		logger.info("Latitude=" + apt.getLatitude().getValue());
+                		logger.info("Altitude=" + apt.getLongitude().getValue());
+                		logger.info("fecha envio de la posicion=" + apt.getTimestamp().getValue());
                 	}
+                }    
+                
+                /*
+                 * GetVehicleEvents
+                 */
+                ArrayOfEventTypeType arrayOfEventTypeType = new ArrayOfEventTypeType();
+                arrayOfEventTypeType.getEventType().add(EventTypeType.PANIC_ALARM_ACTIVATE);
+                arrayOfEventTypeType.getEventType().add(EventTypeType.PANIC_ALARM_UPDATE);
+                arrayOfEventTypeType.getEventType().add(EventTypeType.PANIC_ALARM_DEACTIVATE);
+                arrayOfEventTypeType.getEventType().add(EventTypeType.PANIC_ALARM_STATIONARY_LIMIT);
+                arrayOfEventTypeType.getEventType().add(EventTypeType.OVERSPEED_EXCEEDED);
+                arrayOfEventTypeType.getEventType().add(EventTypeType.HARSH_BRAKING);
+                ArrayOfEventDataType arrayOfEventDataType = port.getVehicleEvents(loginSession, arrayOfint, arrayOfEventTypeType, from, to);
+                for (EventDataType eventDataType : arrayOfEventDataType.getEventData()) {
+                	logger.info("Nombre de Evento=" + eventDataType.getEventType().name());
+                	logger.info("Fecha Evento=" + eventDataType.getTimestamp().toString());
                 }
             }
+            /*
+             * GetDrivers
+             */
+            ArrayOfDriverType arrayOfDriverType = port.getDrivers(loginSession);
+            for(DriverType driverType : arrayOfDriverType.getDriver()) {
+            	ArrayOfint arrayOfint = new ArrayOfint();
+        		arrayOfint.getInt().add(driverType.getId());
+            	/*
+                 * GetDriverSpeedIntervals
+                 */
+        		ArrayOfDriverIntervalDataType arrayOfDriverIntervalDataType = port.getDriverSpeedIntervals(loginSession, arrayOfint, from, to);
+        		for(DriverIntervalDataType driverIntervalDataType : arrayOfDriverIntervalDataType.getDriverIntervalData()) {
+        			logger.info("Distance=" + driverIntervalDataType.getDistance());//Fuel, time and distance per speed interval and driver
+        		}
+            }
+            
+            
+            
+            //Id de nuestra BD
+            //Fechaemv Debe ser creado en nuestra base de datos
            
 
         } catch (IExternalFleetMgmtServiceLoginFleetMgmtExceptionFaultFaultMessage e) { 
