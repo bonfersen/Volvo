@@ -77,7 +77,7 @@ public class VolvoBusesServiceImpl extends Thread implements VolvoBusesService {
 	}*/
 
 	public void startConectionDynafleeApi() throws Exception {
-		logger.info("-----------------------Iniciando comunicacion con los servicios de FleetMgmt");
+		logger.info("-----------------------Iniciando comunicacion  con los servicios de FleetMgmt");
 		IExternalFleetMgmtService port = getURLConnection().getBasicHttps();
 		String srtLogin = null;
 		
@@ -101,7 +101,7 @@ public class VolvoBusesServiceImpl extends Thread implements VolvoBusesService {
             ArrayOfVehicleType arrayOfVehicleType = port.getVehicles(loginSession);
 
             for (VehicleType vehicleType : arrayOfVehicleType.getVehicle()) {
-            	logger.info("Vehiculos ---------------------------");
+            	logger.info("GetVehicles ---------------------------");
             	logger.info("vin=" + vehicleType.getChassiId().getValue()); // VIN
             	logger.info("company=" + vehicleType.getCompanyId().longValue());
             	logger.info("id=" + vehicleType.getId()); // Id unico por vehiculo
@@ -117,7 +117,7 @@ public class VolvoBusesServiceImpl extends Thread implements VolvoBusesService {
                 ArrayOfKeyValueOfintArrayOfTimedPositionfi2YCEuP array = port.getVehiclePositions(loginSession, arrayOfint, from, to);
                 List<ArrayOfKeyValueOfintArrayOfTimedPositionfi2YCEuP.KeyValueOfintArrayOfTimedPositionfi2YCEuP> arrayB = array.getKeyValueOfintArrayOfTimedPositionfi2YCEuP();
                 for (ArrayOfKeyValueOfintArrayOfTimedPositionfi2YCEuP.KeyValueOfintArrayOfTimedPositionfi2YCEuP a: arrayB) {
-                	logger.info("-----------------------Posicionamiento del VehicleId.result = " + a.getKey());
+                	logger.info("-----------------------Posicionamiento del VehicleId = " + a.getKey());
                 	for (TimedPositionType apt : a.getValue().getTimedPosition()) {
                 		logger.info("Latitude=" + apt.getLatitude().getValue());
                 		logger.info("Altitude=" + apt.getLongitude().getValue());
@@ -141,6 +141,7 @@ public class VolvoBusesServiceImpl extends Thread implements VolvoBusesService {
                 	logger.info("Fecha Evento=" + eventDataType.getTimestamp().toString());
                 }
             }
+		
             /*
              * GetDrivers
              */
@@ -152,6 +153,7 @@ public class VolvoBusesServiceImpl extends Thread implements VolvoBusesService {
                  * GetDriverSpeedIntervals
                  */
         		ArrayOfDriverIntervalDataType arrayOfDriverIntervalDataType = port.getDriverSpeedIntervals(loginSession, arrayOfint, from, to);
+        		logger.info("----------------------- Velocidad del Conductor: " + driverType.getId());
         		for(DriverIntervalDataType driverIntervalDataType : arrayOfDriverIntervalDataType.getDriverIntervalData()) {
         			logger.info("Distance=" + driverIntervalDataType.getDistance());//Fuel, time and distance per speed interval and driver
         		}
