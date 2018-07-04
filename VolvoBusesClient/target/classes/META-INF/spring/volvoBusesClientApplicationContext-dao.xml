@@ -8,6 +8,6 @@ http://www.springframework.org/schema/context
 http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="basePackage" value="com.sutran.client.dao" />
+		<property name="basePackage" value="com.volvobuses.client.dao" />
 	</bean>
 </beans>

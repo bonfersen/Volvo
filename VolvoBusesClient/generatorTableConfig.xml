@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+	<!-- Ubicaci&oacute;n del JAR JDBC del gestor de Base de datos a usar, en 
+		este caso MySQL -->
+	<classPathEntry
+		location="D:\docs\jars\sqljdbc4-2.0.jar" />
+
+	<!-- Generaremos para MyBatis versi&oacute;n 3 -->
+	<context id="DB1" targetRuntime="MyBatis3">
+
+		<!-- No generamos los comentarios -->
+		<commentGenerator>
+			<property name="suppressAllComments" value="true" />
+		</commentGenerator>
+
+		<!-- Par&aacute;metros de conexi&oacute;n a la bd -->
+		<jdbcConnection driverClass="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+			connectionURL="jdbc:sqlserver://DESKTOP-QNKRE8K\MSSQLSERVER;DatabaseName=SUTRAN"
+			userId="sa" password="campoy">
+		</jdbcConnection>
+
+		<javaModelGenerator targetPackage="com.volvobuses.client.bean"
+			targetProject="VolvoBusesClient">
+			<property name="enableSubPackages" value="true" />
+		</javaModelGenerator>
+
+		<sqlMapGenerator targetPackage="com.volvobuses.client.bean"
+			targetProject="VolvoBusesClient">
+			<property name="enableSubPackages" value="true" />
+		</sqlMapGenerator>
+
+		<!-- tipo ANNOTATEDMAPPER -->
+		<javaClientGenerator type="XMLMAPPER"
+			targetPackage="com.volvobuses.client.dao" targetProject="VolvoBusesClient">
+			<property name="enableSubPackages" value="true" />
+		</javaClientGenerator>
+
+		<!-- PARA TABLAS -->
+		<!-- CAMBIAR EL TABLE NAME -->
+		<!-- CAMBIAR EL COLUMN POR EL NOMBRE DE LA PRIMARY KEY -->
+		
+		<!--table tableName='Gen_tb_Flota'
+			enableCountByExample='false' enableDeleteByExample='false'
+			enableUpdateByExample='false' selectByPrimaryKeyQueryId='false'
+			selectByExampleQueryId='false' enableSelectByExample='true'
+			modelType='flat'>
+			<property name='useActualColumnNames' value='true' />
+			<generatedKey column="idFlota" sqlStatement="SELECT @@IDENTITY"
+				identity="true" />
+		</table -->
+		
+		<table tableName='Gen_tb_Vehiculo'
+			enableCountByExample='false' enableDeleteByExample='false'
+			enableUpdateByExample='false' selectByPrimaryKeyQueryId='false'
+			selectByExampleQueryId='false' enableSelectByExample='true'
+			modelType='flat'>
+			<property name='useActualColumnNames' value='true' />
+			<generatedKey column="idVehiculo" sqlStatement="SELECT @@IDENTITY"
+				identity="true" />
+		</table>
+		
+		<!--table tableName='Gen_tb_BusesDetalle'
+			enableCountByExample='false' enableDeleteByExample='false'
+			enableUpdateByExample='false' selectByPrimaryKeyQueryId='false'
+			selectByExampleQueryId='false' enableSelectByExample='true'
+			modelType='flat'>
+			<property name='useActualColumnNames' value='true' />
+			<generatedKey column="IdBusDetalle" sqlStatement="SELECT @@IDENTITY"
+				identity="true" />
+		</table>
+		
+		<table tableName='Gen_tb_Parametrica'
+			enableCountByExample='false' enableDeleteByExample='false'
+			enableUpdateByExample='false' selectByPrimaryKeyQueryId='false'
+			selectByExampleQueryId='false' enableSelectByExample='true'
+			modelType='flat'>
+			<property name='useActualColumnNames' value='true' />
+		</table-->
+
+	</context>
+</generatorConfiguration> 

@@ -19,23 +19,32 @@ import org.contract.EventDataType;
 import org.contract.EventTypeType;
 import org.contract.TimedPositionType;
 import org.contract.VehicleType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.tempuri.FleetMgmtService;
 import org.tempuri.IExternalFleetMgmtService;
 import org.tempuri.IExternalFleetMgmtServiceLoginFleetMgmtExceptionFaultFaultMessage;
 
 import com.microsoft.schemas._2003._10.serialization.arrays.ArrayOfKeyValueOfintArrayOfTimedPositionfi2YCEuP;
 import com.microsoft.schemas._2003._10.serialization.arrays.ArrayOfint;
-import com.volvobuses.client.main.VolvoBusesScheduledJob;
+import com.volvobuses.client.bean.GenTbBusesdetalle;
+import com.volvobuses.client.bean.GenTbFlota;
+import com.volvobuses.client.bean.GenTbVehiculo;
+import com.volvobuses.client.service.GenTbBusesDetalleService;
+import com.volvobuses.client.service.GenTbFlotaService;
+import com.volvobuses.client.service.GenTbParametricaService;
+import com.volvobuses.client.service.GenTbVehiculoService;
 import com.volvobuses.client.service.VolvoBusesService;
+import com.volvobuses.client.util.CriteriaManager;
 import com.volvobuses.client.util.VolvoBusesConstants;
 
 @Service("volvoBusesService")
 public class VolvoBusesServiceImpl extends Thread implements VolvoBusesService {
 
-	private static final Logger logger = LogManager.getLogger(VolvoBusesScheduledJob.class);
-
-	/*
+	private static final Logger logger = LogManager.getLogger(VolvoBusesServiceImpl.class);
+	
 	@Autowired
 	private GenTbFlotaService genTbFlotaService;
 
@@ -43,10 +52,10 @@ public class VolvoBusesServiceImpl extends Thread implements VolvoBusesService {
 	private GenTbVehiculoService genTbVehiculoService;
 
 	@Autowired
-	private GenTbVehiculodetalleService genTbVehiculodetalleService;
+	private GenTbBusesDetalleService genTbBusesDetalleService;
 
 	@Autowired
-	private GenTbHorometroService genTbHorometroService;
+	private GenTbParametricaService genTbParametricaService;
 
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
 	public int saveVehiculo(GenTbVehiculo bean) throws Exception {
@@ -54,13 +63,13 @@ public class VolvoBusesServiceImpl extends Thread implements VolvoBusesService {
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-	public int saveVehiculoDetalle(GenTbVehiculodetalle bean) throws Exception {
-		return genTbVehiculodetalleService.save(bean);
+	public int saveVehiculoDetalle(GenTbBusesdetalle bean) throws Exception {
+		return genTbBusesDetalleService.save(bean);
 	}
 
 	public List<GenTbFlota> selectFlotas() throws Exception {
 		CriteriaManager criteriaManager = new CriteriaManager();
-		criteriaManager.createCriteria().andFieldEqualTo("activo", SutranClientConstants.ACTIVO);
+		criteriaManager.createCriteria().andFieldEqualTo("activo", VolvoBusesConstants.ACTIVO).andFieldEqualTo("tipoFlota", VolvoBusesConstants.CADENA_UNO);
 		return genTbFlotaService.select(criteriaManager);
 	}
 
@@ -74,7 +83,7 @@ public class VolvoBusesServiceImpl extends Thread implements VolvoBusesService {
 		}
 
 		return (lstGenTbVehiculo.size() > 0) ? lstGenTbVehiculo.get(0) : null;
-	}*/
+	}
 
 	public void startConectionDynafleeApi() throws Exception {
 		logger.info("-----------------------Iniciando comunicacion  con los servicios de FleetMgmt");
@@ -120,7 +129,7 @@ public class VolvoBusesServiceImpl extends Thread implements VolvoBusesService {
                 	logger.info("-----------------------Posicionamiento del VehicleId = " + a.getKey());
                 	for (TimedPositionType apt : a.getValue().getTimedPosition()) {
                 		logger.info("Latitude=" + apt.getLatitude().getValue());
-                		logger.info("Altitude=" + apt.getLongitude().getValue());
+                		logger.info("Longitud=" + apt.getLongitude().getValue());
                 		logger.info("fecha envio de la posicion=" + apt.getTimestamp().getValue());
                 	}
                 }    
@@ -134,7 +143,6 @@ public class VolvoBusesServiceImpl extends Thread implements VolvoBusesService {
                 arrayOfEventTypeType.getEventType().add(EventTypeType.PANIC_ALARM_DEACTIVATE);
                 arrayOfEventTypeType.getEventType().add(EventTypeType.PANIC_ALARM_STATIONARY_LIMIT);
                 arrayOfEventTypeType.getEventType().add(EventTypeType.OVERSPEED_EXCEEDED);
-                arrayOfEventTypeType.getEventType().add(EventTypeType.HARSH_BRAKING);
                 ArrayOfEventDataType arrayOfEventDataType = port.getVehicleEvents(loginSession, arrayOfint, arrayOfEventTypeType, from, to);
                 for (EventDataType eventDataType : arrayOfEventDataType.getEventData()) {
                 	logger.info("Nombre de Evento=" + eventDataType.getEventType().name());
@@ -159,9 +167,6 @@ public class VolvoBusesServiceImpl extends Thread implements VolvoBusesService {
         		}
             }
             
-            
-            
-            //Id de nuestra BD
             //Fechaemv Debe ser creado en nuestra base de datos
            
 

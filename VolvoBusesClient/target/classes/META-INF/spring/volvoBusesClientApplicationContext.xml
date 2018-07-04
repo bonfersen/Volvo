@@ -5,6 +5,6 @@
 						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
 	<import resource="classpath:/META-INF/spring/volvoBusesClientApplicationContext-properties.xml" />
-	<!--  import resource="classpath:/META-INF/spring/volvoBusesClientApplicationContext-database.xml" /-->
-	<!-- import resource="classpath:/META-INF/spring/volvoBusesClientApplicationContext-dao.xml" /-->
+	<import resource="classpath:/META-INF/spring/volvoBusesClientApplicationContext-database.xml" />
+	<import resource="classpath:/META-INF/spring/volvoBusesClientApplicationContext-dao.xml" />
 </beans>

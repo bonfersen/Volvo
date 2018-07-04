@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.sutran.client.dao.GenTbVehiculoMapper">
-  <resultMap id="BaseResultMap" type="com.sutran.client.bean.GenTbVehiculo">
+<mapper namespace="com.volvobuses.client.dao.GenTbVehiculoMapper">
+  <resultMap id="BaseResultMap" type="com.volvobuses.client.bean.GenTbVehiculo">
     <id column="idVehiculo" jdbcType="INTEGER" property="idVehiculo" />
     <result column="placa" jdbcType="VARCHAR" property="placa" />
     <result column="fechaRegistroApi" jdbcType="TIMESTAMP" property="fechaRegistroApi" />
@@ -41,7 +41,7 @@
   <sql id="Base_Column_List">
     idVehiculo, placa, fechaRegistroApi, idFlota, idVehiculoApi, vin
   </sql>
-  <select id="selectByExample" parameterType="com.sutran.client.util.CriteriaManager" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.volvobuses.client.util.CriteriaManager" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -66,7 +66,7 @@
     delete from Gen_tb_Vehiculo
     where idVehiculo = #{idVehiculo,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.sutran.client.bean.GenTbVehiculo">
+  <insert id="insert" parameterType="com.volvobuses.client.bean.GenTbVehiculo">
     <selectKey keyProperty="idVehiculo" order="AFTER" resultType="java.lang.Integer">
       SELECT @@IDENTITY
     </selectKey>
@@ -75,7 +75,7 @@
     values (#{placa,jdbcType=VARCHAR}, #{fechaRegistroApi,jdbcType=TIMESTAMP}, #{idFlota,jdbcType=INTEGER}, 
       #{idVehiculoApi,jdbcType=BIGINT}, #{vin,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.sutran.client.bean.GenTbVehiculo">
+  <insert id="insertSelective" parameterType="com.volvobuses.client.bean.GenTbVehiculo">
     <selectKey keyProperty="idVehiculo" order="AFTER" resultType="java.lang.Integer">
       SELECT @@IDENTITY
     </selectKey>
@@ -115,7 +115,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.sutran.client.bean.GenTbVehiculo">
+  <update id="updateByPrimaryKeySelective" parameterType="com.volvobuses.client.bean.GenTbVehiculo">
     update Gen_tb_Vehiculo
     <set>
       <if test="placa != null">
@@ -136,7 +136,7 @@
     </set>
     where idVehiculo = #{idVehiculo,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.sutran.client.bean.GenTbVehiculo">
+  <update id="updateByPrimaryKey" parameterType="com.volvobuses.client.bean.GenTbVehiculo">
     update Gen_tb_Vehiculo
     set placa = #{placa,jdbcType=VARCHAR},
       fechaRegistroApi = #{fechaRegistroApi,jdbcType=TIMESTAMP},

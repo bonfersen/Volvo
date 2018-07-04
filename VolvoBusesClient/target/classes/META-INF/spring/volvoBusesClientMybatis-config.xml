@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-	<typeAliases>
-		<typeAlias alias="Flota" type="com.sutran.client.bean.GenTbFlota" />
-	</typeAliases>
 	<mappers>
 	    <mapper resource="META-INF/spring/mappers/GenTbFlotaMapper.xml" />
-	    <mapper resource="META-INF/spring/mappers/GenTbVehiculodetalleMapper.xml" />
 	    <mapper resource="META-INF/spring/mappers/GenTbVehiculoMapper.xml" />
-	    <mapper resource="META-INF/spring/mappers/GenTbHorometroMapper.xml" />
+	    <mapper resource="META-INF/spring/mappers/GenTbBusesdetalleMapper.xml" />
+	    <mapper resource="META-INF/spring/mappers/GenTbParametricaMapper.xml" />
 	</mappers>
 </configuration>

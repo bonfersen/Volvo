@@ -41,4 +41,21 @@ public class VolvoBusesConstants {
 	public final static String VALIDACION_CAMPO_OBLIGATORIO = "obligatorio";
 
 	public static final String ACTIVO = "1";
+	
+	/**
+	 * 
+	 */
+	public static final String CADENA_UNO = "1";
+	
+	/**
+	 * Constante de parametricas
+	 */
+	public static final String URL_TELEMETRIA_BUSES = "UTBU001";
+	public static final String METODO_TELEMETRIA_BUSES_LOGIN = "MTBU001";
+	public static final String METODO_TELEMETRIA_BUSES_VEHICLES = "MTBU002";
+	public static final String METODO_TELEMETRIA_BUSES_VEHICLE_POSITIONS = "MTBU003";
+	public static final String METODO_TELEMETRIA_BUSES_VEHICLE_EVENTS = "MTBU004";
+	public static final String METODO_TELEMETRIA_BUSES_DRIVERS = "MTBU005";
+	public static final String METODO_TELEMETRIA_BUSES_DRIVER_SPEED_INTERVAL = "MTBU006";
+	public static final String TIEMPO_HORAS_CONSUMO_TELEMETRIA_BUSES = "TCTB001";
 }
