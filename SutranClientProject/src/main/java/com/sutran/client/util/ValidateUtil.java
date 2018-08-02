@@ -130,7 +130,7 @@ public class ValidateUtil {
 	public static Boolean isEmptyOrCero(String strVal) {
 		if (isEmpty(strVal))
 			return true;
-		if (strVal.equals(SutranClientConstants.CERO))
+		if (strVal.equals(SutranClientConstants.CADENA_CERO))
 			return true;
 		return false;
 	}

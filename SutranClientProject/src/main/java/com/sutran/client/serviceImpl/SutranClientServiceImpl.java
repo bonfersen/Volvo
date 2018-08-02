@@ -5,7 +5,6 @@ import java.net.URL;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,8 +26,8 @@ import com.sutran.client.service.SutranClientService;
 import com.sutran.client.util.CriteriaManager;
 import com.sutran.client.util.LatLng;
 import com.sutran.client.util.SutranClientConstants;
-import com.sutran.client.util.SutranUtil;
 import com.sutran.client.util.ValidateUtil;
+import com.sutran.client.util.VolvoUtil;
 import com.wirelesscar.dynafleet.api.DynafleetAPI;
 import com.wirelesscar.dynafleet.api.DynafleetAPIException;
 import com.wirelesscar.dynafleet.api.LoginService;
@@ -79,7 +78,7 @@ public class SutranClientServiceImpl extends Thread implements SutranClientServi
 
 	public List<GenTbFlota> selectFlotas() throws Exception {
 		CriteriaManager criteriaManager = new CriteriaManager();
-		criteriaManager.createCriteria().andFieldEqualTo("activo", SutranClientConstants.ACTIVO);
+		criteriaManager.createCriteria().andFieldEqualTo("activo", SutranClientConstants.ACTIVO).andFieldEqualTo("tipoFlota", SutranClientConstants.CADENA_CERO);;
 		return genTbFlotaService.select(criteriaManager);
 	}
 
@@ -253,7 +252,7 @@ public class SutranClientServiceImpl extends Thread implements SutranClientServi
 			if (ValidateUtil.isNotEmpty(latitudApi) && ValidateUtil.isNotEmpty(longitudApi)) {
 				LatLng src = new LatLng(latitudApi, longitudApi);
 				LatLng dst = new LatLng(0, 0);
-				double rumboDouble = SutranUtil.bearingInDegrees(src, dst);
+				double rumboDouble = VolvoUtil.bearingInDegrees(src, dst);
 				int rumboInt = (int) Math.round(Math.floor(rumboDouble));
 				genTbVehiculodetalle.setRumbo(rumboInt);
 			}
@@ -288,14 +287,8 @@ public class SutranClientServiceImpl extends Thread implements SutranClientServi
 				genTbVehiculodetalle.setOdometro(apiTrackingDataV2TO.getOdometer().getValue());
 			}
 
-			genTbVehiculodetalle.setEstaTransmitido(SutranClientConstants.CERO);
+			genTbVehiculodetalle.setEstaTransmitido(SutranClientConstants.CADENA_CERO);
 			genTbVehiculodetalleService.save(genTbVehiculodetalle);
-			
-			/*
-			 * functionCounterVehiclesDetails++; if (functionCounterVehiclesDetails == SutranClientConstants.MAX_CANTIDAD_CONSUMOS_METODO) { logger.info(
-			 * "Se llego al maximo consumo de metodos en getNewTrackingDataV2: " + functionCounterVehiclesDetails);
-			 * this.sleep(SutranClientConstants.TIEMPO_ESPERA_CONSUMO_WEBSERVICE_POR_METODO); functionCounterVehiclesDetails = 0; }
-			 */
 		}
 		if (seEncontroDetalleVehiculo)
 			logger.info("Termino proceso de almacenamiento de informacion de detalle del vehiculo");

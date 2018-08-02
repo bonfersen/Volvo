@@ -12,10 +12,6 @@ public class GenTbBusesdetalle {
 
     private Integer rumbo;
 
-    private Integer velocidad;
-
-    private String evento;
-
     private Date fechaRegistroGPS;
 
     private Integer idVehiculo;
@@ -52,22 +48,6 @@ public class GenTbBusesdetalle {
 
     public void setRumbo(Integer rumbo) {
         this.rumbo = rumbo;
-    }
-
-    public Integer getVelocidad() {
-        return velocidad;
-    }
-
-    public void setVelocidad(Integer velocidad) {
-        this.velocidad = velocidad;
-    }
-
-    public String getEvento() {
-        return evento;
-    }
-
-    public void setEvento(String evento) {
-        this.evento = evento;
     }
 
     public Date getFechaRegistroGPS() {

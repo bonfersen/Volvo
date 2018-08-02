@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.volvobuses.client.dao.GenTbBuseseventosMapper">
+  <resultMap id="BaseResultMap" type="com.volvobuses.client.bean.GenTbBuseseventos">
+    <id column="idBusEvento" jdbcType="INTEGER" property="idBusEvento" />
+    <result column="idVehiculo" jdbcType="INTEGER" property="idVehiculo" />
+    <result column="fechaEvento" jdbcType="TIMESTAMP" property="fechaEvento" />
+    <result column="nombreEvento" jdbcType="VARCHAR" property="nombreEvento" />
+    <result column="evento" jdbcType="VARCHAR" property="evento" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    idBusEvento, idVehiculo, fechaEvento, nombreEvento, evento
+  </sql>
+  <select id="selectByExample" parameterType="com.volvobuses.client.util.CriteriaManager" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from Gen_tb_BusesEventos
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from Gen_tb_BusesEventos
+    where idBusEvento = #{idBusEvento,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from Gen_tb_BusesEventos
+    where idBusEvento = #{idBusEvento,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.volvobuses.client.bean.GenTbBuseseventos">
+    <selectKey keyProperty="idBusEvento" order="AFTER" resultType="java.lang.Integer">
+      SELECT @@IDENTITY
+    </selectKey>
+    insert into Gen_tb_BusesEventos (idVehiculo, fechaEvento, nombreEvento, 
+      evento)
+    values (#{idVehiculo,jdbcType=INTEGER}, #{fechaEvento,jdbcType=TIMESTAMP}, #{nombreEvento,jdbcType=VARCHAR}, 
+      #{evento,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.volvobuses.client.bean.GenTbBuseseventos">
+    <selectKey keyProperty="idBusEvento" order="AFTER" resultType="java.lang.Integer">
+      SELECT @@IDENTITY
+    </selectKey>
+    insert into Gen_tb_BusesEventos
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="idVehiculo != null">
+        idVehiculo,
+      </if>
+      <if test="fechaEvento != null">
+        fechaEvento,
+      </if>
+      <if test="nombreEvento != null">
+        nombreEvento,
+      </if>
+      <if test="evento != null">
+        evento,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="idVehiculo != null">
+        #{idVehiculo,jdbcType=INTEGER},
+      </if>
+      <if test="fechaEvento != null">
+        #{fechaEvento,jdbcType=TIMESTAMP},
+      </if>
+      <if test="nombreEvento != null">
+        #{nombreEvento,jdbcType=VARCHAR},
+      </if>
+      <if test="evento != null">
+        #{evento,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.volvobuses.client.bean.GenTbBuseseventos">
+    update Gen_tb_BusesEventos
+    <set>
+      <if test="idVehiculo != null">
+        idVehiculo = #{idVehiculo,jdbcType=INTEGER},
+      </if>
+      <if test="fechaEvento != null">
+        fechaEvento = #{fechaEvento,jdbcType=TIMESTAMP},
+      </if>
+      <if test="nombreEvento != null">
+        nombreEvento = #{nombreEvento,jdbcType=VARCHAR},
+      </if>
+      <if test="evento != null">
+        evento = #{evento,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where idBusEvento = #{idBusEvento,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.volvobuses.client.bean.GenTbBuseseventos">
+    update Gen_tb_BusesEventos
+    set idVehiculo = #{idVehiculo,jdbcType=INTEGER},
+      fechaEvento = #{fechaEvento,jdbcType=TIMESTAMP},
+      nombreEvento = #{nombreEvento,jdbcType=VARCHAR},
+      evento = #{evento,jdbcType=VARCHAR}
+    where idBusEvento = #{idBusEvento,jdbcType=INTEGER}
+  </update>
+</mapper>

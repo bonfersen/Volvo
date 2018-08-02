@@ -6,8 +6,6 @@
     <result column="latitud" jdbcType="DECIMAL" property="latitud" />
     <result column="longitud" jdbcType="DECIMAL" property="longitud" />
     <result column="rumbo" jdbcType="INTEGER" property="rumbo" />
-    <result column="velocidad" jdbcType="INTEGER" property="velocidad" />
-    <result column="evento" jdbcType="VARCHAR" property="evento" />
     <result column="fechaRegistroGPS" jdbcType="TIMESTAMP" property="fechaRegistroGPS" />
     <result column="idVehiculo" jdbcType="INTEGER" property="idVehiculo" />
     <result column="estaTransmitido" jdbcType="VARCHAR" property="estaTransmitido" />
@@ -42,8 +40,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    idBusDetalle, latitud, longitud, rumbo, velocidad, evento, fechaRegistroGPS, idVehiculo, 
-    estaTransmitido
+    idBusDetalle, latitud, longitud, rumbo, fechaRegistroGPS, idVehiculo, estaTransmitido
   </sql>
   <select id="selectByExample" parameterType="com.volvobuses.client.util.CriteriaManager" resultMap="BaseResultMap">
     select
@@ -75,11 +72,11 @@
       SELECT @@IDENTITY
     </selectKey>
     insert into Gen_tb_BusesDetalle (latitud, longitud, rumbo, 
-      velocidad, evento, fechaRegistroGPS, 
-      idVehiculo, estaTransmitido)
+      fechaRegistroGPS, idVehiculo, estaTransmitido
+      )
     values (#{latitud,jdbcType=DECIMAL}, #{longitud,jdbcType=DECIMAL}, #{rumbo,jdbcType=INTEGER}, 
-      #{velocidad,jdbcType=INTEGER}, #{evento,jdbcType=VARCHAR}, #{fechaRegistroGPS,jdbcType=TIMESTAMP}, 
-      #{idVehiculo,jdbcType=INTEGER}, #{estaTransmitido,jdbcType=VARCHAR})
+      #{fechaRegistroGPS,jdbcType=TIMESTAMP}, #{idVehiculo,jdbcType=INTEGER}, #{estaTransmitido,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.volvobuses.client.bean.GenTbBusesdetalle">
     <selectKey keyProperty="idBusDetalle" order="AFTER" resultType="java.lang.Integer">
@@ -95,12 +92,6 @@
       </if>
       <if test="rumbo != null">
         rumbo,
-      </if>
-      <if test="velocidad != null">
-        velocidad,
-      </if>
-      <if test="evento != null">
-        evento,
       </if>
       <if test="fechaRegistroGPS != null">
         fechaRegistroGPS,
@@ -121,12 +112,6 @@
       </if>
       <if test="rumbo != null">
         #{rumbo,jdbcType=INTEGER},
-      </if>
-      <if test="velocidad != null">
-        #{velocidad,jdbcType=INTEGER},
-      </if>
-      <if test="evento != null">
-        #{evento,jdbcType=VARCHAR},
       </if>
       <if test="fechaRegistroGPS != null">
         #{fechaRegistroGPS,jdbcType=TIMESTAMP},
@@ -151,12 +136,6 @@
       <if test="rumbo != null">
         rumbo = #{rumbo,jdbcType=INTEGER},
       </if>
-      <if test="velocidad != null">
-        velocidad = #{velocidad,jdbcType=INTEGER},
-      </if>
-      <if test="evento != null">
-        evento = #{evento,jdbcType=VARCHAR},
-      </if>
       <if test="fechaRegistroGPS != null">
         fechaRegistroGPS = #{fechaRegistroGPS,jdbcType=TIMESTAMP},
       </if>
@@ -174,8 +153,6 @@
     set latitud = #{latitud,jdbcType=DECIMAL},
       longitud = #{longitud,jdbcType=DECIMAL},
       rumbo = #{rumbo,jdbcType=INTEGER},
-      velocidad = #{velocidad,jdbcType=INTEGER},
-      evento = #{evento,jdbcType=VARCHAR},
       fechaRegistroGPS = #{fechaRegistroGPS,jdbcType=TIMESTAMP},
       idVehiculo = #{idVehiculo,jdbcType=INTEGER},
       estaTransmitido = #{estaTransmitido,jdbcType=VARCHAR}

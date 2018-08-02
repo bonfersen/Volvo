@@ -6,5 +6,6 @@
 	    <mapper resource="META-INF/spring/mappers/GenTbVehiculoMapper.xml" />
 	    <mapper resource="META-INF/spring/mappers/GenTbBusesdetalleMapper.xml" />
 	    <mapper resource="META-INF/spring/mappers/GenTbParametricaMapper.xml" />
+	    <mapper resource="META-INF/spring/mappers/GenTbBuseseventosMapper.xml" />
 	</mappers>
 </configuration>

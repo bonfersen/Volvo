@@ -41,7 +41,7 @@
 		<!-- CAMBIAR EL TABLE NAME -->
 		<!-- CAMBIAR EL COLUMN POR EL NOMBRE DE LA PRIMARY KEY -->
 		
-		<!--table tableName='Gen_tb_Flota'
+		<table tableName='Gen_tb_Flota'
 			enableCountByExample='false' enableDeleteByExample='false'
 			enableUpdateByExample='false' selectByPrimaryKeyQueryId='false'
 			selectByExampleQueryId='false' enableSelectByExample='true'
@@ -53,7 +53,7 @@
 		
 		
 		
-		<table tableName='Gen_tb_VehiculoDetalle'
+		<!-- table tableName='Gen_tb_VehiculoDetalle'
 			enableCountByExample='false' enableDeleteByExample='false'
 			enableUpdateByExample='false' selectByPrimaryKeyQueryId='false'
 			selectByExampleQueryId='false' enableSelectByExample='true'
@@ -63,7 +63,7 @@
 				identity="true" />
 		</table-->
 		
-		<table tableName='Gen_tb_Horometro'
+		<!-- table tableName='Gen_tb_Horometro'
 			enableCountByExample='false' enableDeleteByExample='false'
 			enableUpdateByExample='false' selectByPrimaryKeyQueryId='false'
 			selectByExampleQueryId='false' enableSelectByExample='true'
@@ -71,7 +71,7 @@
 			<property name='useActualColumnNames' value='true' />
 			<generatedKey column="idHorometro" sqlStatement="SELECT @@IDENTITY"
 				identity="true" />
-		</table>
+		</table -->
 
 	</context>
 </generatorConfiguration> 

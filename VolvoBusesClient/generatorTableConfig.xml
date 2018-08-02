@@ -51,7 +51,7 @@
 				identity="true" />
 		</table -->
 		
-		<table tableName='Gen_tb_Vehiculo'
+		<!-- table tableName='Gen_tb_Vehiculo'
 			enableCountByExample='false' enableDeleteByExample='false'
 			enableUpdateByExample='false' selectByPrimaryKeyQueryId='false'
 			selectByExampleQueryId='false' enableSelectByExample='true'
@@ -59,25 +59,35 @@
 			<property name='useActualColumnNames' value='true' />
 			<generatedKey column="idVehiculo" sqlStatement="SELECT @@IDENTITY"
 				identity="true" />
-		</table>
+		</table -->
 		
-		<!--table tableName='Gen_tb_BusesDetalle'
+		<table tableName='Gen_tb_BusesDetalle'
 			enableCountByExample='false' enableDeleteByExample='false'
 			enableUpdateByExample='false' selectByPrimaryKeyQueryId='false'
 			selectByExampleQueryId='false' enableSelectByExample='true'
 			modelType='flat'>
 			<property name='useActualColumnNames' value='true' />
-			<generatedKey column="IdBusDetalle" sqlStatement="SELECT @@IDENTITY"
+			<generatedKey column="idBusDetalle" sqlStatement="SELECT @@IDENTITY"
 				identity="true" />
 		</table>
 		
-		<table tableName='Gen_tb_Parametrica'
+		<!-- table tableName='Gen_tb_BusesEventos'
 			enableCountByExample='false' enableDeleteByExample='false'
 			enableUpdateByExample='false' selectByPrimaryKeyQueryId='false'
 			selectByExampleQueryId='false' enableSelectByExample='true'
 			modelType='flat'>
 			<property name='useActualColumnNames' value='true' />
-		</table-->
+			<generatedKey column="idBusEvento" sqlStatement="SELECT @@IDENTITY"
+				identity="true" />
+		</table -->
+		
+		<!-- table tableName='Gen_tb_Parametrica'
+			enableCountByExample='false' enableDeleteByExample='false'
+			enableUpdateByExample='false' selectByPrimaryKeyQueryId='false'
+			selectByExampleQueryId='false' enableSelectByExample='true'
+			modelType='flat'>
+			<property name='useActualColumnNames' value='true' />
+		</table -->
 
 	</context>
 </generatorConfiguration> 

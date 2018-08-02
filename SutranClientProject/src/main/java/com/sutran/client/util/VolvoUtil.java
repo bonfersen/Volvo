@@ -1,6 +1,6 @@
 package com.sutran.client.util;
 
-public class SutranUtil {
+public class VolvoUtil {
 
 	/***
 	 * Metodo para obtener el rumbo en radianes

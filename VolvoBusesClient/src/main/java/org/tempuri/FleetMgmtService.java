@@ -18,7 +18,7 @@ import javax.xml.ws.Service;
  * 
  */
 @WebServiceClient(name = "FleetMgmtService", 
-                  wsdlLocation = "https://fm.servicesvolvobuses.com/Tmix.Cap.FleetMgmt.Library.Wcf.External/1.4/FleetMgmtService.svc?wsdl",
+                  wsdlLocation = VolvoBusesConstants.WEBSERVICE_DYNAFLEET_URL,
                   targetNamespace = "http://tempuri.org/") 
 public class FleetMgmtService extends Service {
 

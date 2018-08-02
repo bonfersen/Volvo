@@ -11,6 +11,8 @@ public class GenTbFlota {
 
     private String activo;
 
+    private String tipoFlota;
+
     public Integer getIdFlota() {
         return idFlota;
     }
@@ -49,5 +51,13 @@ public class GenTbFlota {
 
     public void setActivo(String activo) {
         this.activo = activo;
+    }
+
+    public String getTipoFlota() {
+        return tipoFlota;
+    }
+
+    public void setTipoFlota(String tipoFlota) {
+        this.tipoFlota = tipoFlota;
     }
 }

@@ -37,9 +37,11 @@ public class SutranClientConstants {
 	/**
 	 * Cero
 	 */
-	public static final String CERO = "0";
-	
 	public final static String VALIDACION_CAMPO_OBLIGATORIO = "obligatorio";
 
 	public static final String ACTIVO = "1";
+	
+	public static final String CADENA_CERO = "0";
+	
+	public static final String CADENA_UNO = "1";
 }
