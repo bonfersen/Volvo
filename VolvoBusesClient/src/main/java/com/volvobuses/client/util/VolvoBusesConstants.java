@@ -17,23 +17,6 @@ public class VolvoBusesConstants {
 			"classpath:/META-INF/spring/volvoBusesClientQuartzContext-config.xml"};
 
 	/**
-	 * Tiempo de inicio de un nuevo hilo, establecido a una hora
-	 */
-	public static final long TIEMPO_ESPERA_CONSUMO_WEBSERVICE_VEHICULO = new Long("3600000");
-	/**
-	 * Tiempo de espera de consumo entre cada 20 metodos
-	 */
-	public static final long TIEMPO_ESPERA_CONSUMO_WEBSERVICE_POR_METODO = new Long("10000");
-	/**
-	 * Tiempo de espera de consumo entre cada 20 inicios de sesion
-	 */
-	public static final long TIEMPO_ESPERA_CONSUMO_WEBSERVICE_POR_LOGIN = new Long("60000");
-	
-	public static final short MAX_CANTIDAD_CONSUMOS_LOGIN = 19;
-	
-	public static final short MAX_CANTIDAD_CONSUMOS_METODO = 19;
-	
-	/**
 	 * Cadenas
 	 */
 	public static final String CERO = "0";
@@ -95,4 +78,10 @@ public class VolvoBusesConstants {
 	public static final String METODO_TELEMETRIA_BUSES_DRIVERS = "MTBU005";
 	public static final String METODO_TELEMETRIA_BUSES_DRIVER_SPEED_INTERVAL = "MTBU006";
 	public static final String TIEMPO_HORAS_CONSUMO_TELEMETRIA_BUSES = "TCTB001";
+	
+	/**
+	 * Eventos
+	 */
+	public static final String OVERSPEED_EXCEEDED = "OVERSPEED_EXCEEDED";
+	public static final String PANIC_ALARM_ACTIVATE = "PANIC_ALARM_ACTIVATE";
 }

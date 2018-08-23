@@ -28,6 +28,7 @@ import org.tempuri.IExternalFleetMgmtService;
 import org.tempuri.IExternalFleetMgmtServiceLoginFleetMgmtExceptionFaultFaultMessage;
 
 import com.microsoft.schemas._2003._10.serialization.arrays.ArrayOfKeyValueOfintArrayOfTimedPositionfi2YCEuP;
+import com.microsoft.schemas._2003._10.serialization.arrays.ArrayOfKeyValueOfintArrayOfTimedPositionfi2YCEuP.KeyValueOfintArrayOfTimedPositionfi2YCEuP;
 import com.microsoft.schemas._2003._10.serialization.arrays.ArrayOfint;
 import com.volvobuses.client.bean.GenTbBusesdetalle;
 import com.volvobuses.client.bean.GenTbBuseseventos;
@@ -59,7 +60,7 @@ public class VolvoBusesServiceImpl extends Thread implements VolvoBusesService {
 
 	@Autowired
 	private GenTbBusesDetalleService genTbBusesDetalleService;
-	
+
 	@Autowired
 	private GenTbBusesEventoService genTbBusesEventosService;
 
@@ -69,11 +70,6 @@ public class VolvoBusesServiceImpl extends Thread implements VolvoBusesService {
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
 	public int saveVehiculo(GenTbVehiculo bean) throws Exception {
 		return genTbVehiculoService.save(bean);
-	}
-
-	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-	public int saveVehiculoDetalle(GenTbBusesdetalle bean) throws Exception {
-		return genTbBusesDetalleService.save(bean);
 	}
 
 	public List<GenTbFlota> selectFlotas() throws Exception {
@@ -94,7 +90,6 @@ public class VolvoBusesServiceImpl extends Thread implements VolvoBusesService {
 		return (lstGenTbVehiculo.size() > 0) ? lstGenTbVehiculo.get(0) : null;
 	}
 
-	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
 	public void startConectionDynafleeApi() throws Exception {
 		logger.info("-----------------------Iniciando comunicacion  con los servicios de FleetMgmt");
 		URL url = null;
@@ -102,7 +97,7 @@ public class VolvoBusesServiceImpl extends Thread implements VolvoBusesService {
 		int tiempoHorasPeticion;
 
 		/*
-		 * Obtener parametros
+		 * Obtener parametro URL
 		 */
 		CriteriaManager criteriaManagerURL = new CriteriaManager();
 		criteriaManagerURL.createCriteria().andFieldEqualTo("paraId", VolvoBusesConstants.URL_TELEMETRIA_BUSES).andFieldEqualTo("activo", VolvoBusesConstants.ACTIVO);
@@ -113,6 +108,9 @@ public class VolvoBusesServiceImpl extends Thread implements VolvoBusesService {
 		else
 			throw new Exception("La URL para consumir el servicio no se encuentra en la BD");
 
+		/*
+		 * Obtener parametro tiempo consumo
+		 */
 		CriteriaManager criteriaManagerTiempoConsumo = new CriteriaManager();
 		criteriaManagerTiempoConsumo.createCriteria().andFieldEqualTo("paraId", VolvoBusesConstants.TIEMPO_HORAS_CONSUMO_TELEMETRIA_BUSES).andFieldEqualTo("activo",
 				VolvoBusesConstants.ACTIVO);
@@ -129,10 +127,16 @@ public class VolvoBusesServiceImpl extends Thread implements VolvoBusesService {
 			/*
 			 * Rango de fechas de busqueda
 			 */
-			XMLGregorianCalendar xmlCalendarFrom = DatatypeFactory.newInstance().newXMLGregorianCalendar("2018-05-19T22:48:28.258-05:00");
-			GregorianCalendar calendar = xmlCalendarFrom.toGregorianCalendar();
-			calendar.add(Calendar.HOUR_OF_DAY, tiempoHorasPeticion);
-			XMLGregorianCalendar xmlCalendarTo = DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
+			GregorianCalendar calendarTo = new GregorianCalendar();
+			calendarTo.setTime(new Date());
+			XMLGregorianCalendar xmlCalendarTo = DatatypeFactory.newInstance().newXMLGregorianCalendar(calendarTo);
+
+			/*XMLGregorianCalendar xmlCalendarTo = DatatypeFactory.newInstance().newXMLGregorianCalendar("2018-06-01T14:00:00.258-05:00");
+			GregorianCalendar calendarTo = xmlCalendarTo.toGregorianCalendar();*/
+
+			GregorianCalendar calendarFrom = calendarTo;
+			calendarFrom.add(Calendar.HOUR_OF_DAY, -tiempoHorasPeticion);
+			XMLGregorianCalendar xmlCalendarFrom = DatatypeFactory.newInstance().newXMLGregorianCalendar(calendarFrom);
 			/*
 			 * Array de eventos a detectar
 			 */
@@ -157,16 +161,14 @@ public class VolvoBusesServiceImpl extends Thread implements VolvoBusesService {
 				srtLogin = port.login(genTbFlota.getUsuario(), genTbFlota.getPassword());
 				logger.info("login.result=" + srtLogin);
 				String loginSession = srtLogin;
+
 				/*
 				 * GetVehicles
 				 */
 				ArrayOfVehicleType arrayOfVehicleType = port.getVehicles(loginSession);
-
 				for (VehicleType vehicleType : arrayOfVehicleType.getVehicle()) {
 					GenTbVehiculo genTbVehiculo = new GenTbVehiculo();
 					Long idVehiculoApi = Long.valueOf(vehicleType.getId()).longValue();
-					Double latitudApi = null;
-					Double longitudApi = null;
 
 					logger.info("GetVehicles ---------------------------");
 					logger.debug("Company=" + vehicleType.getCompanyId().longValue()); // relaciona a empresa con sus vehículos y usuarios
@@ -194,115 +196,22 @@ public class VolvoBusesServiceImpl extends Thread implements VolvoBusesService {
 						logger.debug("El vehiculo existe");
 					}
 
-					ArrayOfint arrayVehicleId = new ArrayOfint();
-					arrayVehicleId.getInt().add(vehicleType.getId());
+					ArrayOfint apiVehicleId = new ArrayOfint();
+					apiVehicleId.getInt().add(vehicleType.getId());
 
 					/*
-					 * GetVehiclePositions
+					 * GetVehiclePositions / Posiciones por vehiculo
 					 */
-					ArrayOfKeyValueOfintArrayOfTimedPositionfi2YCEuP array = port.getVehiclePositions(loginSession, arrayVehicleId, xmlCalendarFrom, xmlCalendarTo);
-					List<ArrayOfKeyValueOfintArrayOfTimedPositionfi2YCEuP.KeyValueOfintArrayOfTimedPositionfi2YCEuP> arrayB = array.getKeyValueOfintArrayOfTimedPositionfi2YCEuP();
-					for (ArrayOfKeyValueOfintArrayOfTimedPositionfi2YCEuP.KeyValueOfintArrayOfTimedPositionfi2YCEuP a : arrayB) {
-						logger.info("-----------------------Posicionamiento del VehicleId = " + a.getKey());
-
-						for (TimedPositionType apt : a.getValue().getTimedPosition()) {
-							GenTbBusesdetalle genTbBusesdetalle = new GenTbBusesdetalle();
-
-							/*
-							 * Buscar el id del vehiculo en base de datos local
-							 */
-							GenTbVehiculo genTbVehiculoEntity = selectVehiculoByIdVehiculoApi(new Long(a.getKey()), genTbFlota.getIdFlota());
-							if (ValidateUtil.isNotEmpty(genTbVehiculoEntity)) {
-								genTbBusesdetalle.setIdVehiculo(genTbVehiculoEntity.getIdVehiculo());
-
-								if (ValidateUtil.isNotEmpty(apt.getLatitude())) {
-									latitudApi = new Double(apt.getLatitude().getValue());
-									logger.debug("Latitude=" + latitudApi);
-									final BigDecimal latitudValue = new BigDecimal(latitudApi.toString());
-									BigDecimal latitude = new BigDecimal(latitudValue.toPlainString().toString());
-									genTbBusesdetalle.setLatitud(latitude);
-								}
-
-								if (ValidateUtil.isNotEmpty(apt.getLongitude())) {
-									longitudApi = new Double(apt.getLongitude().getValue());
-									logger.debug("Longitud=" + longitudApi);
-									final BigDecimal longitudValue = new BigDecimal(longitudApi.toString());
-									BigDecimal longitude = new BigDecimal(longitudValue.toPlainString().toString());
-									genTbBusesdetalle.setLongitud(longitude);
-								}
-
-								// Calculo del rumbo
-								if (ValidateUtil.isNotEmpty(latitudApi) && ValidateUtil.isNotEmpty(longitudApi)) {
-									LatLng src = new LatLng(latitudApi, longitudApi);
-									LatLng dst = new LatLng(0, 0);
-									double rumboDouble = VolvoUtil.bearingInDegrees(src, dst);
-									int rumboInt = (int) Math.round(Math.floor(rumboDouble));
-									logger.debug("Rumbo=" + rumboInt);
-									genTbBusesdetalle.setRumbo(rumboInt);
-								}
-
-								if (ValidateUtil.isNotEmpty(apt.getTimestamp().getValue())) {
-									Date fechaRegistroGPS = apt.getTimestamp().getValue().toGregorianCalendar().getTime();
-									logger.debug("fecha registro GPS=" + fechaRegistroGPS); // Fecha
-									genTbBusesdetalle.setFechaRegistroGPS(fechaRegistroGPS);
-								}
-								genTbBusesdetalle.setEstaTransmitido(VolvoBusesConstants.CERO);
-								genTbBusesDetalleService.save(genTbBusesdetalle);
-							}
-						}
-					}
+					ArrayOfKeyValueOfintArrayOfTimedPositionfi2YCEuP array = port.getVehiclePositions(loginSession, apiVehicleId, xmlCalendarFrom, xmlCalendarTo);
+					obtenerPosicionamiento(array.getKeyValueOfintArrayOfTimedPositionfi2YCEuP(), genTbFlota.getIdFlota());
 
 					/*
-					 * GetVehicleEvents
+					 * GetVehicleEvents / Eventos por vehiculo
 					 */
-					ArrayOfEventDataType arrayOfEventDataType = port.getVehicleEvents(loginSession, arrayVehicleId, arrayOfEventTypeType, xmlCalendarFrom, xmlCalendarTo);
-					for (EventDataType eventDataType : arrayOfEventDataType.getEventData()) {
-						GenTbBuseseventos genTbBuseseventos = new GenTbBuseseventos();
-						/*
-						 * Buscar el id del vehiculo en base de datos local
-						 */
-						GenTbVehiculo genTbVehiculoEntity = selectVehiculoByIdVehiculoApi(new Long(eventDataType.getVehicleId().getValue()), genTbFlota.getIdFlota());
-						if (ValidateUtil.isNotEmpty(genTbVehiculoEntity)) {
-							genTbBuseseventos.setIdVehiculo(genTbVehiculoEntity.getIdVehiculo());
-							
-							if (ValidateUtil.isNotEmpty(eventDataType.getEventType())) {
-								logger.debug("Nombre de Evento=" + eventDataType.getEventType().name());
-								genTbBuseseventos.setNombreEvento(eventDataType.getEventType().name());
-							}
-							if (ValidateUtil.isNotEmpty(eventDataType.getTimestamp())) {
-								Date fechaEvento = eventDataType.getTimestamp().toGregorianCalendar().getTime();
-								logger.debug("Fecha Evento=" + eventDataType.getTimestamp().toString());
-								genTbBuseseventos.setFechaEvento(fechaEvento);
-							}
-							logger.debug("Driver id Evento=" + eventDataType.getDriverId().getValue());
-							genTbBusesEventosService.save(genTbBuseseventos);
-						}
-					}
+					ArrayOfEventDataType arrayOfEventDataType = port.getVehicleEvents(loginSession, apiVehicleId, arrayOfEventTypeType, xmlCalendarFrom, xmlCalendarTo);
+					obtenerEventos(arrayOfEventDataType, genTbFlota.getIdFlota());
+
 				}
-
-				// Calculo de velocidad (pendiente)
-				/*
-				 * GetDrivers, se obtiene la info de conductores por usuario o flota
-				 */
-				// ArrayOfDriverType arrayOfDriverType = port.getDrivers(loginSession);
-				// for (DriverType driverType : arrayOfDriverType.getDriver()) {
-				// ArrayOfint arrayOfDriverId = new ArrayOfint();
-				//
-				// // if (ValidateUtil.isNotEmpty(eventDataType.getDriverId().getValue())) {
-				// int driverId = driverType.getId();
-				// arrayOfDriverId.getInt().add(driverId);
-				// /*
-				// * GetDriverSpeedIntervals
-				// */
-				// ArrayOfDriverIntervalDataType arrayOfDriverIntervalDataType = port.getDriverSpeedIntervals(loginSession,
-				// arrayOfDriverId, xmlCalendarFrom, xmlCalendarTo);
-				// logger.info("----------------------- GetDriverSpeedIntervals id: " + driverId);
-				// for (DriverIntervalDataType driverIntervalDataType : arrayOfDriverIntervalDataType.getDriverIntervalData()) {
-				// if (ValidateUtil.isNotEmpty(driverIntervalDataType.getFuel())) {
-				// logger.debug("Fuel=" + driverIntervalDataType.getFuel());// Fuel, galones americanos
-				// }
-				// }
-				// }
 			}
 		}
 		catch (IExternalFleetMgmtServiceLoginFleetMgmtExceptionFaultFaultMessage e) {
@@ -311,6 +220,105 @@ public class VolvoBusesServiceImpl extends Thread implements VolvoBusesService {
 		}
 
 		logger.info("-----------------------Finalizo proceso de almacenamiento: " + this.getId() + ", Fecha/Hora: " + new Date());
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+	private void obtenerPosicionamiento(List<KeyValueOfintArrayOfTimedPositionfi2YCEuP> array, Integer idFlota) throws Exception {
+
+		for (KeyValueOfintArrayOfTimedPositionfi2YCEuP a : array) {
+			logger.info("-----------------------Posicionamiento del VehicleId = " + a.getKey());
+
+			for (TimedPositionType apt : a.getValue().getTimedPosition()) {
+				GenTbBusesdetalle genTbBusesdetalle = new GenTbBusesdetalle();
+
+				/*
+				 * Buscar el id del vehiculo en base de datos local
+				 */
+				GenTbVehiculo genTbVehiculoEntity = selectVehiculoByIdVehiculoApi(new Long(a.getKey()), idFlota);
+				if (ValidateUtil.isNotEmpty(genTbVehiculoEntity)) {
+					genTbBusesdetalle.setIdVehiculo(genTbVehiculoEntity.getIdVehiculo());
+					Double latitudApi = null;
+					Double longitudApi = null;
+
+					if (ValidateUtil.isNotEmpty(apt.getLatitude())) {
+						latitudApi = new Double(apt.getLatitude().getValue());
+						logger.debug("Latitude=" + latitudApi);
+						final BigDecimal latitudValue = new BigDecimal(latitudApi.toString());
+						BigDecimal latitude = new BigDecimal(latitudValue.toPlainString().toString());
+						genTbBusesdetalle.setLatitud(latitude);
+					}
+
+					if (ValidateUtil.isNotEmpty(apt.getLongitude())) {
+						longitudApi = new Double(apt.getLongitude().getValue());
+						logger.debug("Longitud=" + longitudApi);
+						final BigDecimal longitudValue = new BigDecimal(longitudApi.toString());
+						BigDecimal longitude = new BigDecimal(longitudValue.toPlainString().toString());
+						genTbBusesdetalle.setLongitud(longitude);
+					}
+
+					// Calculo del rumbo
+					if (ValidateUtil.isNotEmpty(latitudApi) && ValidateUtil.isNotEmpty(longitudApi)) {
+						LatLng src = new LatLng(latitudApi, longitudApi);
+						LatLng dst = new LatLng(0, 0);
+						double rumboDouble = VolvoUtil.bearingInDegrees(src, dst);
+						int rumboInt = (int) Math.round(Math.floor(rumboDouble));
+						logger.debug("Rumbo=" + rumboInt);
+						genTbBusesdetalle.setRumbo(rumboInt);
+					}
+
+					if (ValidateUtil.isNotEmpty(apt.getTimestamp().getValue())) {
+						Date fechaRegistroGPS = apt.getTimestamp().getValue().toGregorianCalendar().getTime();
+						logger.debug("fecha registro GPS=" + fechaRegistroGPS); // Fecha
+						genTbBusesdetalle.setFechaRegistroGPS(fechaRegistroGPS);
+					}
+					genTbBusesdetalle.setEstaTransmitido(VolvoBusesConstants.CERO);
+					genTbBusesDetalleService.save(genTbBusesdetalle);
+				}
+			}
+		}
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+	private void obtenerEventos(ArrayOfEventDataType arrayOfEventDataType, Integer idFlota) throws Exception {
+		for (EventDataType eventDataType : arrayOfEventDataType.getEventData()) {
+			GenTbBuseseventos genTbBuseseventos = new GenTbBuseseventos();
+			/*
+			 * Buscar el id del vehiculo en base de datos local
+			 */
+			GenTbVehiculo genTbVehiculoEntity = selectVehiculoByIdVehiculoApi(new Long(eventDataType.getVehicleId().getValue()), idFlota);
+			if (ValidateUtil.isNotEmpty(genTbVehiculoEntity)) {
+				genTbBuseseventos.setIdVehiculo(genTbVehiculoEntity.getIdVehiculo());
+				double velocidad;
+				velocidad = eventDataType.getPosition().getValue().getSpeed().getValue();
+				logger.debug("Velocidad Evento=" + velocidad);
+				genTbBuseseventos.setVelocidad(new BigDecimal(eventDataType.getPosition().getValue().getSpeed().getValue().toString()));
+				if (ValidateUtil.isNotEmpty(eventDataType.getEventType())) {
+					String nombreEvento = eventDataType.getEventType().name();
+					logger.debug("Nombre de Evento=" + nombreEvento);
+
+					genTbBuseseventos.setNombreEvento(nombreEvento);
+					// if (nombreEvento.compareTo(VolvoBusesConstants.OVERSPEED_EXCEEDED) == 0) {
+					if (velocidad > 90) {
+						genTbBuseseventos.setEvento("EX");
+					}
+					else if (nombreEvento.compareTo(VolvoBusesConstants.PANIC_ALARM_ACTIVATE) == 0) {
+						genTbBuseseventos.setEvento("BP");
+					}
+					else if (velocidad <= 0)
+						genTbBuseseventos.setEvento("PA");
+					else if (velocidad > 0)
+						genTbBuseseventos.setEvento("ER");
+				}
+				if (ValidateUtil.isNotEmpty(eventDataType.getTimestamp())) {
+					Date fechaEvento = eventDataType.getTimestamp().toGregorianCalendar().getTime();
+					logger.debug("Fecha Evento=" + eventDataType.getTimestamp().toString());
+					genTbBuseseventos.setFechaEvento(fechaEvento);
+				}
+				logger.debug("Driver id Evento=" + eventDataType.getDriverId().getValue());
+				genTbBusesEventosService.save(genTbBuseseventos);
+			}
+		}
+
 	}
 
 	private FleetMgmtService getURLConnection(URL wsdlURL) {

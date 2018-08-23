@@ -7,6 +7,7 @@
     <result column="fechaEvento" jdbcType="TIMESTAMP" property="fechaEvento" />
     <result column="nombreEvento" jdbcType="VARCHAR" property="nombreEvento" />
     <result column="evento" jdbcType="VARCHAR" property="evento" />
+    <result column="velocidad" jdbcType="DECIMAL" property="velocidad" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -38,7 +39,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    idBusEvento, idVehiculo, fechaEvento, nombreEvento, evento
+    idBusEvento, idVehiculo, fechaEvento, nombreEvento, evento, velocidad
   </sql>
   <select id="selectByExample" parameterType="com.volvobuses.client.util.CriteriaManager" resultMap="BaseResultMap">
     select
@@ -70,9 +71,9 @@
       SELECT @@IDENTITY
     </selectKey>
     insert into Gen_tb_BusesEventos (idVehiculo, fechaEvento, nombreEvento, 
-      evento)
+      evento, velocidad)
     values (#{idVehiculo,jdbcType=INTEGER}, #{fechaEvento,jdbcType=TIMESTAMP}, #{nombreEvento,jdbcType=VARCHAR}, 
-      #{evento,jdbcType=VARCHAR})
+      #{evento,jdbcType=VARCHAR}, #{velocidad,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="com.volvobuses.client.bean.GenTbBuseseventos">
     <selectKey keyProperty="idBusEvento" order="AFTER" resultType="java.lang.Integer">
@@ -92,6 +93,9 @@
       <if test="evento != null">
         evento,
       </if>
+      <if test="velocidad != null">
+        velocidad,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="idVehiculo != null">
@@ -105,6 +109,9 @@
       </if>
       <if test="evento != null">
         #{evento,jdbcType=VARCHAR},
+      </if>
+      <if test="velocidad != null">
+        #{velocidad,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
@@ -123,6 +130,9 @@
       <if test="evento != null">
         evento = #{evento,jdbcType=VARCHAR},
       </if>
+      <if test="velocidad != null">
+        velocidad = #{velocidad,jdbcType=DECIMAL},
+      </if>
     </set>
     where idBusEvento = #{idBusEvento,jdbcType=INTEGER}
   </update>
@@ -131,7 +141,8 @@
     set idVehiculo = #{idVehiculo,jdbcType=INTEGER},
       fechaEvento = #{fechaEvento,jdbcType=TIMESTAMP},
       nombreEvento = #{nombreEvento,jdbcType=VARCHAR},
-      evento = #{evento,jdbcType=VARCHAR}
+      evento = #{evento,jdbcType=VARCHAR},
+      velocidad = #{velocidad,jdbcType=DECIMAL}
     where idBusEvento = #{idBusEvento,jdbcType=INTEGER}
   </update>
 </mapper>

@@ -125,15 +125,15 @@ public class SutranClientServiceImpl extends Thread implements SutranClientServi
 			loginCounter++;
 			if (loginCounter == SutranClientConstants.MAX_CANTIDAD_CONSUMOS_LOGIN) {
 				logger.info("Se llego al maximo consumo de metodos en Login: " + loginCounter);
-				this.sleep(SutranClientConstants.TIEMPO_ESPERA_CONSUMO_WEBSERVICE_POR_LOGIN);
+				Thread.sleep(SutranClientConstants.TIEMPO_ESPERA_CONSUMO_WEBSERVICE_POR_LOGIN);
 				loginCounter = 0;
 			}
 
 			// Cerrando Sesion
-			logger.debug("---------Invoking logout...");
-			ApiSessionId apiSessionIdLogout = new ApiSessionId();
-			apiSessionIdLogout.setId(apiSessionIdLogin.getId());
-			portLogin.logout(apiSessionIdLogout);
+//			logger.debug("---------Invoking logout...");
+//			ApiSessionId apiSessionIdLogout = new ApiSessionId();
+//			apiSessionIdLogout.setId(apiSessionIdLogin.getId());
+//			portLogin.logout(apiSessionIdLogout);
 
 		}
 		logger.info(
@@ -148,7 +148,8 @@ public class SutranClientServiceImpl extends Thread implements SutranClientServi
 		boolean seEncontroHorometro = false;
 		int functionCounterVehicles = 0;
 		int functionCounterVehiclesDetails = 0;
-
+		int functionCounterHorometers = 0;
+		
 		/*
 		 * Obtener vehiculos getVehiclesV2: Id del vehiculo, Portal name, VIN
 		 */
@@ -205,7 +206,7 @@ public class SutranClientServiceImpl extends Thread implements SutranClientServi
 			functionCounterVehicles++;
 			if (functionCounterVehicles == SutranClientConstants.MAX_CANTIDAD_CONSUMOS_METODO) {
 				logger.info("Se llego al maximo consumo de metodos en getVehiclesV2: " + functionCounterVehicles);
-				this.sleep(SutranClientConstants.TIEMPO_ESPERA_CONSUMO_WEBSERVICE_POR_METODO);
+				Thread.sleep(SutranClientConstants.TIEMPO_ESPERA_CONSUMO_WEBSERVICE_POR_METODO);
 				functionCounterVehicles = 0;
 			}
 		}
@@ -289,6 +290,13 @@ public class SutranClientServiceImpl extends Thread implements SutranClientServi
 
 			genTbVehiculodetalle.setEstaTransmitido(SutranClientConstants.CADENA_CERO);
 			genTbVehiculodetalleService.save(genTbVehiculodetalle);
+			
+			functionCounterVehiclesDetails++;
+			if (functionCounterVehiclesDetails == SutranClientConstants.MAX_CANTIDAD_CONSUMOS_METODO) {
+				logger.info("Se llego al maximo consumo de metodos en getNewTrackingDataV2: " + functionCounterVehiclesDetails);
+				//Thread.sleep(SutranClientConstants.TIEMPO_ESPERA_CONSUMO_WEBSERVICE_POR_METODO);
+				functionCounterVehiclesDetails = 0;
+			}
 		}
 		if (seEncontroDetalleVehiculo)
 			logger.info("Termino proceso de almacenamiento de informacion de detalle del vehiculo");
@@ -300,7 +308,7 @@ public class SutranClientServiceImpl extends Thread implements SutranClientServi
 		ApiVehicleDataExtendedArrayTO apiVehicleDataExtendedArrayTO = portReportService.getNewVehicleReportDataExtended(apiSessionIdLogin);
 		List<ApiVehicleDataExtendedTO> lstApiVehicleDataExtendedTO = apiVehicleDataExtendedArrayTO.getArray();
 
-		logger.debug("---------Invoking Horometro");
+		logger.debug("---------Invoking getNewVehicleReportDataExtended / Horometro");
 		for (ApiVehicleDataExtendedTO apiVehicleDataExtendedTO : lstApiVehicleDataExtendedTO) {
 			List<ApiVehicleDataEntryExtendedTO> lstApiVehicleDataEntryExtendedTO = apiVehicleDataExtendedTO.getDataEntries();
 
@@ -309,6 +317,7 @@ public class SutranClientServiceImpl extends Thread implements SutranClientServi
 			GenTbVehiculo genTbVehiculoTemp2 = selectVehiculoByIdVehiculoApi(idVehiculoApi2, genTbFlota.getIdFlota());
 
 			if (ValidateUtil.isNotEmpty(genTbVehiculoTemp2)) {
+				logger.info("Tamanyo de lista de horometros encontrados: " + lstApiVehicleDataEntryExtendedTO.size());
 				for (ApiVehicleDataEntryExtendedTO apiVehicleDataEntryExtendedTO : lstApiVehicleDataEntryExtendedTO) {
 					seEncontroHorometro = true;
 					GenTbHorometro genTbHorometro = new GenTbHorometro();
@@ -325,6 +334,13 @@ public class SutranClientServiceImpl extends Thread implements SutranClientServi
 					genTbHorometro.setIdVehiculo(genTbVehiculoTemp2.getIdVehiculo());
 					
 					genTbHorometroService.save(genTbHorometro);
+					
+					functionCounterHorometers++;
+					if (functionCounterHorometers == SutranClientConstants.MAX_CANTIDAD_CONSUMOS_METODO) {
+						logger.info("Se llego al maximo consumo de metodos en getNewVehicleReportDataExtended: " + functionCounterHorometers);
+						//Thread.sleep(SutranClientConstants.TIEMPO_ESPERA_CONSUMO_WEBSERVICE_POR_METODO);
+						functionCounterHorometers = 0;
+					}
 				}
 			}
 		}		

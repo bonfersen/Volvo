@@ -32,7 +32,7 @@ public class SutranClientConstants {
 	
 	public static final short MAX_CANTIDAD_CONSUMOS_LOGIN = 19;
 	
-	public static final short MAX_CANTIDAD_CONSUMOS_METODO = 19;
+	public static final short MAX_CANTIDAD_CONSUMOS_METODO = 17;
 	
 	/**
 	 * Cero

@@ -17,7 +17,7 @@
 
 		<!-- Par&aacute;metros de conexi&oacute;n a la bd -->
 		<jdbcConnection driverClass="com.microsoft.sqlserver.jdbc.SQLServerDriver"
-			connectionURL="jdbc:sqlserver://DESKTOP-QNKRE8K\MSSQLSERVER;DatabaseName=SUTRAN"
+			connectionURL="jdbc:sqlserver://DESKTOP-DEOM69B\SANTUARIO;DatabaseName=SUTRAN"
 			userId="sa" password="campoy">
 		</jdbcConnection>
 
@@ -61,7 +61,7 @@
 				identity="true" />
 		</table -->
 		
-		<table tableName='Gen_tb_BusesDetalle'
+		<!-- table tableName='Gen_tb_BusesDetalle'
 			enableCountByExample='false' enableDeleteByExample='false'
 			enableUpdateByExample='false' selectByPrimaryKeyQueryId='false'
 			selectByExampleQueryId='false' enableSelectByExample='true'
@@ -69,9 +69,9 @@
 			<property name='useActualColumnNames' value='true' />
 			<generatedKey column="idBusDetalle" sqlStatement="SELECT @@IDENTITY"
 				identity="true" />
-		</table>
+		</table-->
 		
-		<!-- table tableName='Gen_tb_BusesEventos'
+		<table tableName='Gen_tb_BusesEventos'
 			enableCountByExample='false' enableDeleteByExample='false'
 			enableUpdateByExample='false' selectByPrimaryKeyQueryId='false'
 			selectByExampleQueryId='false' enableSelectByExample='true'
@@ -79,7 +79,7 @@
 			<property name='useActualColumnNames' value='true' />
 			<generatedKey column="idBusEvento" sqlStatement="SELECT @@IDENTITY"
 				identity="true" />
-		</table -->
+		</table>
 		
 		<!-- table tableName='Gen_tb_Parametrica'
 			enableCountByExample='false' enableDeleteByExample='false'
